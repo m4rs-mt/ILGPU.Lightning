@@ -44,7 +44,13 @@ namespace ILGPU.Lightning.Benchmark
         public override IEnumerable<string> ToFormattedString()
         {
             return base.ToFormattedString().Concat(
-                GpuDeviceNames.Select(x => $"{x.Value} ({x.Key})"));
+                GpuDeviceNames.Select(x =>
+                {
+                    var str = x.Value;
+                    if (1 < GpuDeviceNames.Count)
+                        str = $"[{x.Key.AcceleratorType} #{x.Key.DeviceId}] {str}";
+                    return str;
+                }));
         }
     }
 }
