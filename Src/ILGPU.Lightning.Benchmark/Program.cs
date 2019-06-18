@@ -32,7 +32,7 @@ namespace ILGPU.Lightning.Benchmark
     {
         public static void Main(string[] args)
         {
-            MyHostEnvironmentInfo.Instance.SetupToHostEnvironmentInfo();
+            MyHostEnvironmentInfo.SetupToHostEnvironmentInfo();
 
             var summary = BenchmarkRunner.Run<Md5VsSha256>();
             Console.ReadLine();

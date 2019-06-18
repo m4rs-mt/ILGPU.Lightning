@@ -14,9 +14,15 @@ namespace ILGPU.Lightning.Benchmark
             get => _instance ?? (_instance = new MyHostEnvironmentInfo());
             set => _instance = value;
         }
-
         private static MyHostEnvironmentInfo _instance;
-        
+
+        public static void SetupToHostEnvironmentInfo(HostEnvironmentInfo instance = null)
+        {
+            var field = typeof(HostEnvironmentInfo).GetField("current", BindingFlags.NonPublic | BindingFlags.Static);
+            field.SetValue(null, instance ?? Instance);
+        }
+
+
         public IReadOnlyDictionary<AcceleratorId, string> GpuDeviceNames { get; }
 
         public MyHostEnvironmentInfo()
@@ -33,12 +39,6 @@ namespace ILGPU.Lightning.Benchmark
             }
 
             GpuDeviceNames = deviceNames;
-        }
-
-        public void SetupToHostEnvironmentInfo()
-        {
-            var field = typeof(HostEnvironmentInfo).GetField("current", BindingFlags.NonPublic | BindingFlags.Static);
-            field.SetValue(null, this);
         }
 
         public override IEnumerable<string> ToFormattedString()
