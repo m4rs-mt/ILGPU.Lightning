@@ -7,14 +7,14 @@ using ILGPU.Runtime.Cuda;
 
 namespace ILGPU.Lightning.Benchmark
 {
-    public class MyHostEnvironmentInfo : HostEnvironmentInfo
+    public class GpuHostEnvironmentInfo : HostEnvironmentInfo
     {
-        public static MyHostEnvironmentInfo Instance
+        public static GpuHostEnvironmentInfo Instance
         {
-            get => _instance ?? (_instance = new MyHostEnvironmentInfo());
+            get => _instance ?? (_instance = new GpuHostEnvironmentInfo());
             set => _instance = value;
         }
-        private static MyHostEnvironmentInfo _instance;
+        private static GpuHostEnvironmentInfo _instance;
 
         public static void SetupToHostEnvironmentInfo(HostEnvironmentInfo instance = null)
         {
@@ -25,7 +25,7 @@ namespace ILGPU.Lightning.Benchmark
 
         public IReadOnlyDictionary<AcceleratorId, string> GpuDeviceNames { get; }
 
-        public MyHostEnvironmentInfo()
+        public GpuHostEnvironmentInfo()
         {
             var deviceNames = new Dictionary<AcceleratorId, string>();
 
