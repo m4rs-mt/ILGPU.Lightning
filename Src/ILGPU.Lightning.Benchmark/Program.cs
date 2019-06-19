@@ -12,8 +12,10 @@ namespace ILGPU.Lightning.Benchmark
         {
             GpuHostEnvironmentInfo.SetupToHostEnvironmentInfo();
 
+            var config = System.Diagnostics.Debugger.IsAttached ? new DebugInProcessConfig() : null;
+
             // See https://benchmarkdotnet.org/articles/guides/console-args.html
-            BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args, new DebugInProcessConfig()); // TODO Remove DebugInProcessConfig!
+            BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args, config);
         }
     }
 }
