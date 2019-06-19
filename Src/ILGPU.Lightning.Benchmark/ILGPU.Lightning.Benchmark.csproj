@@ -10,4 +10,8 @@
     <PackageReference Include="ILGPU" Version="0.5.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ILGPU.Lightning\ILGPU.Lightning.csproj" />
+  </ItemGroup>
+
 </Project>

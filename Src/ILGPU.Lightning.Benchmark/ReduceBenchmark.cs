@@ -1,57 +1,49 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using BenchmarkDotNet.Attributes;
+using ILGPU.ReductionOperations;
 using ILGPU.Runtime;
+using ILGPU.Sequencers;
+using ILGPU.ShuffleOperations;
 
 namespace ILGPU.Lightning.Benchmark
 {
-    public abstract class BaseBenchmark
-    {
-        [ParamsSource(nameof(ValuesForAcceleratorId))]
-        public AcceleratorId AcceleratorId { get; set; }
-
-        public IEnumerable<AcceleratorId> ValuesForAcceleratorId => GpuHostEnvironmentInfo.Instance.GpuDeviceNames.Keys;
-
-
-        [ParamsSource(nameof(ValuesForBaseLength))]
-        public int BaseLength { get; set; }
-
-        public IEnumerable<int> ValuesForBaseLength => Enumerable.Range(0, 31).Select(x => 16 << x).TakeWhile(x => x <= 10_000_000);
-
-
-        [GlobalSetup]
-        public virtual void GlobalSetup()
-        {
-
-        }
-
-        [GlobalCleanup]
-        public virtual void GlobalCleanup()
-        {
-
-        }
-    }
-
     public class ReduceBenchmark : BaseBenchmark
     {
+        public MemoryBuffer<int> Buffer { get; private set; }
+        public MemoryBuffer<int> Output { get; private set; }
+
         public override void GlobalSetup()
         {
             base.GlobalSetup();
+
+            Buffer = Accelerator.Allocate<int>(Length);
+            Accelerator.Sequence(Accelerator.DefaultStream, Buffer.View, new Int32Sequencer());
+
+            Output = Accelerator.Allocate<int>(1);
         }
 
         public override void GlobalCleanup()
         {
+            Buffer?.Dispose();
+            Buffer = null;
+
+            Output?.Dispose();
+            Output = null;
+
             base.GlobalCleanup();
         }
 
 
-        [Benchmark]
-        public void Sha256()
+        [Benchmark(Baseline = true)]
+        public void ReduceInt32()
         {
-            Thread.Sleep(Math.Min(100, BaseLength));
-            //return sha256.ComputeHash(data);
+            Accelerator.Reduce(
+                Accelerator.DefaultStream,
+                Buffer.View,
+                Output.View,
+                new ShuffleDownInt32(),
+                new AtomicAddInt32());
         }
     }
 }
