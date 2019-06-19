@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading;
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
 using ILGPU.ReductionOperations;
 using ILGPU.Runtime;
 using ILGPU.Sequencers;

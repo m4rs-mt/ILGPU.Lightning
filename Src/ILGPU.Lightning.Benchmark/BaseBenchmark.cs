@@ -16,7 +16,7 @@ namespace ILGPU.Lightning.Benchmark
         [ParamsSource(nameof(ValuesForLength))]
         public int Length { get; set; }
 
-        public IEnumerable<int> ValuesForLength => Enumerable.Range(0, 31).Select(x => 16 << x).TakeWhile(x => x <= 10_000_000);
+        public IEnumerable<int> ValuesForLength => Enumerable.Range(0, 31).Select(x => 16 << x).TakeWhile(x => x <= 100_000_000);
 
 
         public Context Context { get; private set; }
