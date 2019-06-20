@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BenchmarkDotNet.Attributes;
 using ILGPU.Runtime;
@@ -16,7 +17,7 @@ namespace ILGPU.Lightning.Benchmark
         [ParamsSource(nameof(ValuesForLength))]
         public int Length { get; set; }
 
-        public IEnumerable<int> ValuesForLength => Enumerable.Range(0, 31).Select(x => (1024 * 1024) << x).TakeWhile(x => x <= 100_000_000);
+        public IEnumerable<int> ValuesForLength => Enumerable.Range(0, 31).Select(x => (1024 * 1024) << x).TakeWhile(x => x <= 100_000_000).TakeLast(1);
 
 
         public Context Context { get; private set; }
@@ -27,11 +28,16 @@ namespace ILGPU.Lightning.Benchmark
         {
             Context = new Context();
             Accelerator = Accelerator.Create(Context, AcceleratorId);
+
+            ClockInfrastructureResolver.Clock = new GpuClock(this);
         }
 
         [GlobalCleanup]
         public virtual void GlobalCleanup()
         {
+            (ClockInfrastructureResolver.Clock as IDisposable)?.Dispose();
+            ClockInfrastructureResolver.Clock = null;
+
             Accelerator?.Dispose();
             Accelerator = null;
          

@@ -32,7 +32,6 @@ namespace ILGPU.Lightning.Benchmark
             base.GlobalCleanup();
         }
 
-
         [Benchmark(Baseline = true)]
         public void ReduceInt32()
         {
@@ -42,25 +41,6 @@ namespace ILGPU.Lightning.Benchmark
                 Output.View,
                 new ShuffleDownInt32(),
                 new AtomicAddInt32());
-            Accelerator.Synchronize();
-        }
-
-        [Benchmark]
-        public void ReduceInt32Twice()
-        {
-            Accelerator.Reduce(
-                Accelerator.DefaultStream,
-                Buffer.View,
-                Output.View,
-                new ShuffleDownInt32(),
-                new AtomicAddInt32());
-            Accelerator.Reduce(
-                Accelerator.DefaultStream,
-                Buffer.View,
-                Output.View,
-                new ShuffleDownInt32(),
-                new AtomicAddInt32());
-            Accelerator.Synchronize();
         }
     }
 }
