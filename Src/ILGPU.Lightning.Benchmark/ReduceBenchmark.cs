@@ -8,26 +8,29 @@ namespace ILGPU.Lightning.Benchmark
 {
     public class ReduceBenchmark : BaseBenchmark
     {
-        public MemoryBuffer<int> Buffer { get; private set; }
-        public MemoryBuffer<int> Output { get; private set; }
+        private MemoryBuffer<int> _buffer;
+        private MemoryBuffer<int> _output;
+        private Reduction<int, ShuffleDownInt32, AtomicAddInt32> _reductionInt32;
 
         public override void GlobalSetup()
         {
             base.GlobalSetup();
 
-            Buffer = Accelerator.Allocate<int>(Length);
-            Accelerator.Sequence(Accelerator.DefaultStream, Buffer.View, new Int32Sequencer());
+            _buffer = Accelerator.Allocate<int>(Length);
+            Accelerator.Sequence(Accelerator.DefaultStream, _buffer.View, new Int32Sequencer());
 
-            Output = Accelerator.Allocate<int>(1);
+            _output = Accelerator.Allocate<int>(1);
+
+            _reductionInt32 = Accelerator.CreateReduction<int, ShuffleDownInt32, AtomicAddInt32>();
         }
 
         public override void GlobalCleanup()
         {
-            Buffer?.Dispose();
-            Buffer = null;
+            _buffer?.Dispose();
+            _buffer = null;
 
-            Output?.Dispose();
-            Output = null;
+            _output?.Dispose();
+            _output = null;
 
             base.GlobalCleanup();
         }
@@ -35,10 +38,10 @@ namespace ILGPU.Lightning.Benchmark
         [Benchmark(Baseline = true)]
         public void ReduceInt32()
         {
-            Accelerator.Reduce(
+            _reductionInt32(
                 Accelerator.DefaultStream,
-                Buffer.View,
-                Output.View,
+                _buffer.View,
+                _output.View,
                 new ShuffleDownInt32(),
                 new AtomicAddInt32());
         }
