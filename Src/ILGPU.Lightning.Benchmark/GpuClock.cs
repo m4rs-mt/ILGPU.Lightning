@@ -47,15 +47,14 @@ namespace ILGPU.Lightning.Benchmark
                 CudaException.ThrowIfFailed(cuEventSynchronize(_stop));
                 CudaException.ThrowIfFailed(cuEventElapsedTime(out var pMilliseconds, _start, _stop));
 
-                return (long)Math.Round(pMilliseconds * 2000);
+                return (long)Math.Round(pMilliseconds * 1000000);
             }
         }
 
         public string Title => "Gpu Event";
         public bool IsAvailable => true;
 
-        // https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__EVENT.html#group__CUDART__EVENT_1g40159125411db92c835edb46a0989cd6
-        public Frequency Frequency { get; } = Frequency.FromMHz(2);
+        public Frequency Frequency { get; } = Frequency.FromGHz(1);
 
 
         [DllImport(LibName)]

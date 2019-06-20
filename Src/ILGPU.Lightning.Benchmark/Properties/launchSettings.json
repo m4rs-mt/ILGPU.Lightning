@@ -2,7 +2,7 @@
   "profiles": {
     "ILGPU.Lightning.Benchmark": {
       "commandName": "Project",
-      "commandLineArgs": "-i --strategy Monitoring -e RPlot"
+      "commandLineArgs": "-i -e RPlot"
     }
   }
 }
