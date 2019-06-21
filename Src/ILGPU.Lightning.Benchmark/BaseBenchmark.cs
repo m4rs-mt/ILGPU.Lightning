@@ -14,12 +14,13 @@ namespace ILGPU.Lightning.Benchmark
         public IEnumerable<AcceleratorId> ValuesForAcceleratorId => GpuHostEnvironmentInfo.Instance.GpuDeviceNames.Keys;
 
 
-        [ParamsSource(nameof(ValuesForLength))]
+        [Params(128 * 1024)]
+        // [ParamsSource(nameof(ValuesForLength))]
         public int Length { get; set; }
 
-        public IEnumerable<int> ValuesForLength => FilterValuesForLength(Enumerable.Range(0, 31).Select(x => 1 << x).TakeWhile(x => x <= 100_000_000));
-
-        protected virtual IEnumerable<int> FilterValuesForLength(IEnumerable<int> source) => source;
+        public IEnumerable<int> ValuesForLength => Enumerable.Range(0, 31).Select(x => 1 << x)
+            .SkipWhile(x => x < 1_000_000)
+            .TakeWhile(x => x <= 10_000_000);
 
 
         public Context Context { get; private set; }

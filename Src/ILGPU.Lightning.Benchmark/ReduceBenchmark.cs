@@ -15,8 +15,6 @@ namespace ILGPU.Lightning.Benchmark
         private MemoryBuffer _output;
         private Action _reduce;
 
-        protected override IEnumerable<int> FilterValuesForLength(IEnumerable<int> source) => source.Where(x => 4000000 <= x);
-
         public override void GlobalCleanup()
         {
             _buffer?.Dispose();
@@ -27,7 +25,7 @@ namespace ILGPU.Lightning.Benchmark
 
             base.GlobalCleanup();
         }
-        
+
         #region AddInt32
 
         [GlobalSetup(Target = nameof(ReduceAddInt32))]
@@ -62,6 +60,40 @@ namespace ILGPU.Lightning.Benchmark
 
         #endregion
 
+        #region AddFloat
+
+        [GlobalSetup(Target = nameof(ReduceAddFloat))]
+        public void GlobalSetupAddFloat()
+        {
+            base.GlobalSetup();
+
+            var buffer = Accelerator.Allocate<float>(Length);
+            Accelerator.Sequence(Accelerator.DefaultStream, buffer.View, new FloatSequencer());
+            _buffer = buffer;
+
+            var output = Accelerator.Allocate<float>(1);
+            _output = output;
+
+            var reduction = Accelerator.CreateReduction<float, ShuffleDownFloat, AtomicAddFloat>();
+            _reduce = () =>
+            {
+                reduction(
+                    Accelerator.DefaultStream,
+                    buffer.View,
+                    output.View,
+                    new ShuffleDownFloat(),
+                    new AtomicAddFloat());
+            };
+        }
+
+        [Benchmark]
+        public void ReduceAddFloat()
+        {
+            _reduce();
+        }
+
+        #endregion
+
         #region AddInt64
 
         [GlobalSetup(Target = nameof(ReduceAddInt64))]
@@ -90,40 +122,6 @@ namespace ILGPU.Lightning.Benchmark
 
         [Benchmark]
         public void ReduceAddInt64()
-        {
-            _reduce();
-        }
-
-        #endregion
-
-        #region AddFloat
-
-        [GlobalSetup(Target = nameof(ReduceAddFloat))]
-        public void GlobalSetupAddFloat()
-        {
-            base.GlobalSetup();
-
-            var buffer = Accelerator.Allocate<float>(Length);
-            Accelerator.Sequence(Accelerator.DefaultStream, buffer.View, new FloatSequencer());
-            _buffer = buffer;
-
-            var output = Accelerator.Allocate<float>(1);
-            _output = output;
-
-            var reduction = Accelerator.CreateReduction<float, ShuffleDownFloat, AtomicAddFloat>();
-            _reduce = () =>
-            {
-                reduction(
-                    Accelerator.DefaultStream,
-                    buffer.View,
-                    output.View,
-                    new ShuffleDownFloat(),
-                    new AtomicAddFloat());
-            };
-        }
-        
-        [Benchmark]
-        public void ReduceAddFloat()
         {
             _reduce();
         }
