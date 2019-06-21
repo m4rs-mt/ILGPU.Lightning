@@ -26,7 +26,7 @@ namespace ILGPU.Lightning.Benchmark
             base.GlobalCleanup();
         }
 
-        #region AddInt32
+        #region ReduceAddInt32
 
         [GlobalSetup(Target = nameof(ReduceAddInt32))]
         public void GlobalSetupAddInt32()
@@ -60,7 +60,7 @@ namespace ILGPU.Lightning.Benchmark
 
         #endregion
 
-        #region AddFloat
+        #region ReduceAddFloat
 
         [GlobalSetup(Target = nameof(ReduceAddFloat))]
         public void GlobalSetupAddFloat()
@@ -94,7 +94,7 @@ namespace ILGPU.Lightning.Benchmark
 
         #endregion
 
-        #region AddInt64
+        #region ReduceAddInt64
 
         [GlobalSetup(Target = nameof(ReduceAddInt64))]
         public void GlobalSetupAddInt64()
@@ -128,7 +128,7 @@ namespace ILGPU.Lightning.Benchmark
 
         #endregion
 
-        #region AddDouble
+        #region ReduceAddDouble
 
         [GlobalSetup(Target = nameof(ReduceAddDouble))]
         public void GlobalSetupAddDouble()
