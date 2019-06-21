@@ -248,3 +248,4 @@ Src/ILGPU.Lightning/ReductionOperations.cs
 Src/ILGPU.Lightning/ScanOperations.cs
 Src/ILGPU.Lightning/Sequencers.cs
 Src/ILGPU.Lightning/TypeInformation.cs
+Src/ILGPU.Lightning.Benchmark/BenchmarkDotNet.Artifacts/

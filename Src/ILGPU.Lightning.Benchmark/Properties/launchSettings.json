@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ILGPU.Lightning.Benchmark": {
+      "commandName": "Project",
+      "commandLineArgs": "-i -e RPlot"
+    }
+  }
+}
